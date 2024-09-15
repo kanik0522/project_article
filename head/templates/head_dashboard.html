@@ -1,0 +1,113 @@
+{%extends 'head/base.html'%}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Head Dashboard</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg text-light shadow">
+    <div class="container mt-5">
+        <!-- Dashboard Header -->
+        <div class="text-center mb-4">
+            <h1 class="text-dark display-4">Head Dashboard</h1>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav justify-content-center mb-4">
+            <a class="nav-link btn btn-outline-primary mx-2" href="{% url 'head:manage_users' %}">Manage Users</a>
+
+        </nav>
+
+        <!-- Articles Table -->
+        <div class="card  text-light">
+            <div class="card-header bg-primary text-light">
+                <h5>Articles Overview</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Created At</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for article in articles %}
+                        <tr>
+                            <td><a href="{% url 'head:view_article' article.id %}" class="text-dark text-decoration-underline">{{ article.title }}</a></td>
+                            <td>{{ article.author_name }}</td>
+                            <td>{{ article.created_at }}</td>
+                            <td>
+                                <span class="badge {% if article.get_status_display == 'Accepted' %}bg-success{% elif article.get_status_display == 'Submitted' %}bg-warning{% elif article.get_status_display == 'Rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ article.get_status_display }}
+                                </span>
+                                
+                            </td>
+                            <td>
+                                <!-- Modal Trigger -->
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ article.id }}">Delete</button>
+                            </td>
+                        </tr>
+
+                        <!-- Delete Confirmation Modal -->
+                        <div class="modal fade" id="deleteModal{{ article.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ article.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content bg-dark text-light">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ article.id }}">Confirm Deletion</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete the article titled "{{ article.title }}"?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="post" action="{% url 'head:delete_article' article.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No articles available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS & Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Real-time Validation Script -->
+    <script>
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>
+</html>
+{% endblock %}

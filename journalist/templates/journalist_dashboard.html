@@ -1,0 +1,111 @@
+{% extends "journalist/jbase.html" %}
+
+{% block title %}Journalist Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* Style for the article table */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f2f2f2;
+    }
+
+    .table img {
+        max-width: 100px;
+        height: auto;
+    }
+
+    .table .badge {
+        font-size: 0.9rem;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table .btn {
+        margin-right: 5px;
+    }
+</style>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Welcome, {{ user.first_name }}
+    </h1>
+    <!-- Button to Submit a New Article -->
+    <div class="text-center mb-4">
+        <a href="{% url 'journalist:journalist_dashboard_step1' %}" class="btn btn-primary">Submit a New Article</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="mb-4">Submitted Articles</h2>
+                    {% if articles %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Subtitle</th>
+                                    <th>Author Name</th>
+                                    <th>Image</th>
+                                   
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in articles %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ article.title }}</td>
+                                        <td>{{ article.author_name }}</td>
+                                        <td>
+                                            {% if article.image %}
+                                                <img src="{{ article.image.url }}" alt="Article Image" style="max-width: 100px;">
+                                            {% else %}
+                                                No Image
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% for tag in article.tags.all %}
+                                                <span class="badge bg-primary">{{ tag }}</span>
+                                            {% empty %}
+                                                No Tags
+                                            {% endfor %}
+                                        </td>
+
+                                        <td>{{ article.get_status_display }}</td>
+                                        <td>
+                                            {% if article.status == "submitted" or article.status == "rejected" %}
+                                                <a href="{% url 'journalist:edit_article' article.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-center">No articles submitted yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

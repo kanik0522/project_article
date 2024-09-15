@@ -1,0 +1,60 @@
+{% extends 'head/base.html' %}
+
+{% block title %}Manage Articles{% endblock %}
+
+{% block content %}
+<div class="container mt-5 bg-secondary text-light rounded p-4">
+    <h1 class="mb-4 text-center">Manage Articles</h1>
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.title }}</td>
+                <td>{{ article.author_name }}</td>
+                <td>{{ article.status }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ article.id }}">Delete</button>
+                </td>
+            </tr>
+
+            <!-- Modal for Delete Confirmation -->
+            <div class="modal fade" id="deleteModal{{ article.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark text-light">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Deletion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete the article "{{ article.title }}"?
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post" action="{% url 'head:delete_article' article.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No articles available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center mt-4">
+        <a href="{% url 'head:head_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

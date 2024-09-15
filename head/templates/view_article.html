@@ -1,0 +1,26 @@
+{% extends 'head/base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">{{ article.title }}</h1>
+    <div class="text-center mb-4">
+        <h4>Author: {{ article.author_name }}</h4>
+        <p><strong>Created At:</strong> {{ article.created_at }}</p>
+        <p><strong>Status:</strong> {{ article.get_status_display }}</p>
+    </div>
+    <div class="text-center mb-4">
+        {% if article.image %}
+            <img src="{{ article.image.url }}" alt="Article Image" class="rounded img-fluid">
+        {% endif %}
+    </div>
+    <div>
+        <h4>Content</h4>
+        <p>{{ article.content }}</p>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'head:head_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "journalist/jbase.html" %}
+
+{% block title %}Edit Article{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Edit Article</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea class="form-control" id="content" name="content" rows="6" required>{{ article.content }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" class="form-control" id="author" name="author" value="{{ article.author }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Image:</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+            {% if article.image %}
+                <img src="{{ article.image.url }}" alt="Article Image" class="img-fluid mt-2" style="max-height: 200px;">
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags:</label>
+            <input type="text" class="form-control" id="tags" name="tags" value="{{ article.tags }}" placeholder="Comma-separated tags">
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <input type="text" class="form-control" id="category" name="category" value="{{ article.category }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="publish_date">Publish Date:</label>
+            <input type="date" class="form-control" id="publish_date" name="publish_date" value="{{ article.publish_date|date:'Y-m-d' }}" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{% url 'journalist:journalist_dashboard' %}" class="btn btn-secondary mt-2">Back to Articles</a>
+    </form>
+</div>
+{% endblock %}

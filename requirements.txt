@@ -1,0 +1,8 @@
+app==0.0.1
+asgiref==3.8.1
+bootstrap4==0.1.0
+certifi==2024.8.30
+Django==5.1.1
+djangorestframework==3.15.2
+pillow==10.4.0
+sqlparse==0.5.1

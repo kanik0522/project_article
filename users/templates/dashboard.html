@@ -1,0 +1,116 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="sticky-top bg-light">
+                <h1 class="text-center mb-4">Published Articles</h1>
+            </div>
+            <div class="feed-container">
+                {% for article in articles %}
+                    <div class="card mb-4 shadow-sm border-light">
+                        <div class="img-container">
+                            {% if article.image %}
+                                <img src="{{ article.image.url }}" class="card-img-top img-fluid" alt="{{ article.title }}">
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ article.subtitle }}</h6>
+                            <p class="card-text">{{ article.content|slice:":200" }}...</p>
+                            <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">Read More</a>
+                            <button class="btn btn-outline-primary ms-2 like-button" data-article-id="{{ article.pk }}">
+                                {% if user in article.likes.all %}
+                                    <i class="fas fa-thumbs-up"></i> Unlike
+                                {% else %}
+                                    <i class="far fa-thumbs-up"></i> Like
+                                {% endif %}
+                            </button>
+                            <span class="badge bg-secondary ms-2 like-count">{{ article.likes.count }} Likes</span>
+                            <div>
+                                <strong>Last comment:</strong> {{ article.last_comment }} by {{ article.commenter }}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No articles available.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="sticky-top">
+
+                <div class="card mb-4">
+                    
+                    <div class="card-header">
+                        
+                        <h5 class="card-title">Advertisement</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Place ads or additional info here.</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">User Profile</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Profile details or user info can go here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const articleId = this.getAttribute('data-article-id');
+            const url = "{% url 'like_article' 0 %}".replace(0, articleId);
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likeCountSpan = this.nextElementSibling;
+                likeCountSpan.textContent = data.likes_count + ' Likes';
+                this.querySelector('i').classList.toggle('fas');
+                this.querySelector('i').classList.toggle('far');
+            });
+        });
+    });
+</script>
+
+<style>
+    .feed-container {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .card-img-top {
+        max-height: 300px;
+        object-fit: contain;
+    }
+
+    .img-container {
+        height: px;
+        overflow: hidden;
+    }
+
+    .sticky-top {
+        background-color: #fff;
+        z-index: 10;
+    }
+</style>
+{% endblock %}

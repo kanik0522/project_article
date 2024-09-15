@@ -1,0 +1,80 @@
+{% extends 'editor/base.html' %}
+
+{% block title %}Edit Article{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Article: {{ article.title }}</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Title Field -->
+        <div class="form-group mb-3">
+            <label for="id_title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="id_title" name="title" value="{{ form.title.value }}">
+            {% if form.title.errors %}
+                <div class="text-danger">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Subtitle Field -->
+        <div class="form-group mb-3">
+            <label for="id_subtitle" class="form-label">Subtitle</label>
+            <input type="text" class="form-control" id="id_subtitle" name="subtitle" value="{{ form.subtitle.value }}">
+            {% if form.subtitle.errors %}
+                <div class="text-danger">{{ form.subtitle.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Content Field -->
+        <div class="form-group mb-3">
+            <label for="id_content" class="form-label">Content</label>
+            <textarea class="form-control" id="id_content" name="content" rows="5">{{ form.content.value }}</textarea>
+            {% if form.content.errors %}
+                <div class="text-danger">{{ form.content.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Image Field -->
+        <div class="form-group mb-3">
+            <label for="id_image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="id_image" name="image">
+            {% if form.image.errors %}
+                <div class="text-danger">{{ form.image.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Tags Field (Show selected tags and all available tags) -->
+        <div class="form-group mb-3">
+            <label for="id_tags" class="form-label">Tags</label>
+            <select class="form-control" id="id_tags" name="tags" multiple>
+                {% for tag in form.tags.field.queryset %}
+                    <option value="{{ tag.id }}" {% if tag in form.tags.value %}selected{% endif %}>{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">Hold Ctrl (Cmd on Mac) to select multiple tags</small>
+            {% if form.tags.errors %}
+                <div class="text-danger">{{ form.tags.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Category Field (Show selected category) -->
+        <div class="form-group mb-3">
+            <label for="id_category" class="form-label">Category</label>
+            <select class="form-control" id="id_category" name="category">
+                {% for choice in form.category.field.choices %}
+                    <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
+            {% if form.category.errors %}
+                <div class="text-danger">{{ form.category.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Submit and Cancel Buttons -->
+        <button type="submit" class="btn btn-primary">Update Article</button>
+        <a href="{% url 'users:manage_articles' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

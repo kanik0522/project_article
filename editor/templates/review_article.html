@@ -1,0 +1,33 @@
+{% extends 'editor/base.html' %}
+
+{% block title %}Review Article{% endblock %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card mb-4" style="max-width: 600px;">
+        <img src="{{ article.image.url }}" class="card-img-top mx-auto" alt="Article Image" style="max-height: 300px; max-width:300px; object-fit: cover;">
+        <div class="card-body text-center">
+            <h2 class="card-title">{{ article.title }}</h2>
+            <h4 class="card-subtitle mb-3 text-muted">{{ article.subtitle }}</h4>
+            <p><strong>Submitted by:</strong> {{ article.author_name }}</p>
+            <p><strong>Created at:</strong> {{ article.created_at|date:"F d, Y H:i" }}</p>
+            <p class="card-text">{{ article.content }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Approve / Reject Buttons Section -->
+<div class="d-flex justify-content-center mt-3">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="action" value="accept" class="btn btn-success mx-2">Publish</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger mx-2">Reject</button>
+    </form>
+</div>
+
+<!-- Back to Dashboard Button -->
+<div class="d-flex justify-content-center">
+    <a href="{% url 'editor:editor_dashboard' %}" class="btn btn-secondary mt-2">Back to Dashboard</a>
+</div>
+{% endblock %}

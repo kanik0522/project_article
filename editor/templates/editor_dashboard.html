@@ -1,0 +1,94 @@
+{% extends 'editor/base.html' %}
+
+{% block title %}Editor Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .btn{
+        background-color: #306db2;
+        color :white;
+    }
+    .article-link{
+        color: #306db2;
+    }
+</style>
+<div class="container mt-5">
+
+
+    <h1 class="text-center mb-4">Editor Dashboard</h1>
+
+    <!-- Submitted Articles Section -->
+    <div class="mb-4">
+        <h2 class="text-center">Submitted Articles</h2>
+        <hr>
+        {% if submitted_articles %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in submitted_articles %}
+                    <tr>
+                        <td><a href="{% url 'editor:show_article' article.id %}" class="article-link">{{ article.title }}</a></td>
+                        <td>{{ article.author_name }}</td>
+                        <td>{{ article.created_at }}</td>
+                        <td>{{ article.get_status_display }}</td>
+                        <td>
+                            <a href="{% url 'editor:review_article' article.id %}" class="btn ">Review</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No articles submitted for review.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center">No articles submitted for review.</p>
+        {% endif %}
+    </div>
+
+    <!-- Reviewed Articles Section -->
+    <div>
+        <h2 class="text-center" >Reviewed Articles</h2>
+        {% if reviewed_articles %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in reviewed_articles %}
+                    <tr>
+                        <td><a href="{% url 'editor:show_article' article.id %}" class="article-link">{{ article.title }}</a></td>
+                        <td>{{ article.author_name }}</td>
+                        <td>{{ article.created_at }}</td>
+                        <td>{{ article.get_status_display }}</td>
+                        <td>
+                            <!-- No review action for already reviewed articles -->
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No articles have been reviewed yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center">No articles have been reviewed yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

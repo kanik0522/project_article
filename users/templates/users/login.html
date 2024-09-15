@@ -1,0 +1,70 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Side: Paragraph -->
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h2 class="card-title">Welcome to Mobiloitte PostBook</h2><br><br>
+                <p>
+                    Mobiloitte PostBook is a premier publication dedicated to delivering the latest and most insightful articles across a range of topics. At Mobiloitte PostBook, we are committed to keeping our readers informed and engaged with high-quality content that spans current events, industry trends, and thought-provoking analysis. Our platform offers a dynamic and user-friendly experience where you can easily access and explore fresh articles designed to enhance your knowledge and perspective. Whether you're seeking in-depth reports, expert opinions, or captivating stories, Mobiloitte PostBook provides a wealth of resources to satisfy your intellectual curiosity and keep you up-to-date with the latest developments in various fields.
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Page -->
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+                <div class="card shadow" style="width: 400px;">
+                    <div class="card-body">
+                        <img src="{% static 'images/mob logo.png' %}" alt="Logo" style="height: 100px;">
+                        <h5 class="card-title text-center mb-4">Login</h5>
+                        <form method="POST" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            
+                            <!-- Email Field -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default_if_none:'' }}" required>
+                                {% if form.email.errors %}
+                                    <div class="text-danger">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                {% if form.password.errors %}
+                                    <div class="text-danger">{{ form.password.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Error Message for Invalid Login -->
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.non_field_errors.0 }}
+                                </div>
+                            {% endif %}
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+
+                        <!-- Link to Reset Password Page -->
+                        <p class="mt-3 text-center">
+                            Forgot your password? <a href="{% url 'password_reset' %}">Reset here</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

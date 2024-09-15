@@ -1,0 +1,84 @@
+{% extends 'users/base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">User Profile</h2>
+    <div class="d-flex justify-content-center mt-4">
+        <!-- Toggle buttons -->
+        <button id="profileDetailsBtn" class="btn btn-primary mx-2">Profile Details</button>
+        <button id="changePasswordBtn" class="btn btn-secondary mx-2">Change Password</button>
+    </div>
+
+    <!-- Profile Details Form -->
+    <div id="profileDetailsForm" class="mt-4" style="display: none;">
+        <h3 class="text-center">Edit Profile</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email (Cannot be changed)</label>
+                <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly>
+            </div>
+            <div class="text-center">
+                <button type="submit" name="update_profile" class="btn btn-success">Update Profile</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Change Password Form -->
+    <div id="changePasswordForm" class="mt-4" style="display: none;">
+        <h3 class="text-center">Change Password</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="current_password" class="form-label">Current Password</label>
+                <input type="password" name="current_password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="new_password" class="form-label">New Password</label>
+                <input type="password" name="new_password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label">Confirm New Password</label>
+                <input type="password" name="confirm_password" class="form-control" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" name="change_password" class="btn btn-danger">Change Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// JavaScript to handle toggle between forms
+document.getElementById('profileDetailsBtn').addEventListener('click', function() {
+    document.getElementById('profileDetailsForm').style.display = 'block';
+    document.getElementById('changePasswordForm').style.display = 'none';
+    this.classList.add('btn-primary');
+    this.classList.remove('btn-secondary');
+    document.getElementById('changePasswordBtn').classList.add('btn-secondary');
+    document.getElementById('changePasswordBtn').classList.remove('btn-primary');
+});
+
+document.getElementById('changePasswordBtn').addEventListener('click', function() {
+    document.getElementById('changePasswordForm').style.display = 'block';
+    document.getElementById('profileDetailsForm').style.display = 'none';
+    this.classList.add('btn-primary');
+    this.classList.remove('btn-secondary');
+    document.getElementById('profileDetailsBtn').classList.add('btn-secondary');
+    document.getElementById('profileDetailsBtn').classList.remove('btn-primary');
+});
+
+// By default, show the profile details form
+document.getElementById('profileDetailsBtn').click();
+</script>
+{% endblock %}
